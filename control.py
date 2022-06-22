@@ -68,6 +68,7 @@ class process(threading.Thread):
                 print('开始处理')
                 cv2.imshow('img', img)
                 cv2.waitKey(0)
+                print('abc')
                 # time.sleep(1)
                 self.queue.task_done()
                 print('处理结束')
