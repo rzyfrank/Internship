@@ -339,18 +339,18 @@ def clean_bg_contours_grey(img, r, center):
     return img_copy
 
 
-def pick_roi_processing(img, x, r, center):
+def pick_roi_processing(img, threshold, r, center):
     """
     结合二值化与clean_bg_contours_grey
     :param img: 输入的图像
-    :param x: 二值化的阈值
+    :param threshold: 二值化的阈值
     :param r:
     :param center:
     :return: roi的黑白图像
     """
     img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     img_roi = clean_bg_contours_grey(img_gray, r, center)
-    _, img_roi = cv2.threshold(img_roi, x, 255, cv2.THRESH_BINARY)
+    _, img_roi = cv2.threshold(img_roi, threshold, 255, cv2.THRESH_BINARY)
     return img_roi
 
 
@@ -446,37 +446,39 @@ def fx(n):
 
 
 
-def main(img, x):
+def main(img, threshold):
     """
     凹透镜偏移检测最终接口
     :param img: 输入图片
-    :param x: 二值化的阈值
+    :param threshold: 二值化的阈值
     :param findcenter中有参数需要调整
     :return:
     """
     img_binary = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    _, img_binary = cv2.threshold(img_binary, x, 255, cv2.THRESH_BINARY)
+    _, img_binary = cv2.threshold(img_binary, threshold, 255, cv2.THRESH_BINARY)
     center1, hierarchy1 = findcenter(img_binary)
     dis = cal_distance(center1)
 
     return dis
 
 
-def main1(img, temp, param_a, param_r, scale):
+def main1(img, temp, threshold, r, param_a, param_r, scale):
     """
     凸透镜偏移检测最终接口
     :param img:
     :param temp:
+    :param threshold:
+    :param r:
     :param param_a:
     :param param_r:
-    :param scale:
+    :param scale: 在透镜中一像素对应的距离
     :return:
     """
     a = param_a
     r = param_r
     center = find_center(img, temp, 4)
-    img1 = pick_roi_processing(img, 85, 330, center)
-    area1, area2, area3, area4 = calculate_area(img1, center, 350)
+    img1 = pick_roi_processing(img, threshold, r, center)
+    area1, area2, area3, area4 = calculate_area(img1, center, r+30)
     x_diff, y_diff, x_direction, y_direction = cal_diff(area1, area2, area3, area4)
     x_diff = 2000
     fx = lambda x: x_diff - (area((a-x), r) - area((a+x), r))

@@ -1,3 +1,4 @@
+import sys
 import MvImport.CamUse_import1 as c
 import threading
 import cv2
@@ -74,6 +75,16 @@ class process(threading.Thread):
 
 
 if __name__ == '__main__':
+    # if sys.argv[1] == 'Convex':
+    #     print('凸透镜模式')
+    #     threshold = sys.argv[2]
+    #     r = sys.argv[3]
+    #     param_a = sys.argv[4]
+    #     param_r = sys.argv[5]
+    #     scale = sys.argv[6]
+    # elif sys.argv[1] == 'Concave':
+    #     print('凹透镜模式')
+    #     threshold = sys.argv[2]
     lock_con1 = threading.Condition()
     event1 = threading.Event()
     Lock = threading.Lock()
